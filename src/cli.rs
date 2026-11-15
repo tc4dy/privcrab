@@ -1,4 +1,5 @@
 use std::future::Future;
+use std::path::PathBuf;
 
 use anyhow::Context;
 use clap::{ColorChoice, Parser, Subcommand};
@@ -21,7 +22,9 @@ use privcrab::modules::mac::{oui, spoof};
 #[cfg(target_os = "linux")]
 use privcrab::modules::probe::{self, Mode};
 #[cfg(target_os = "linux")]
-use privcrab::util::iface::{list_interfaces_with_mac, SysLink};
+use privcrab::modules::service;
+#[cfg(target_os = "linux")]
+use privcrab::util::iface::{list_interfaces_with_mac, warn_about_conflicts};
 #[cfg(target_os = "linux")]
 use privcrab::util::privilege::Need;
 use privcrab::style::{bold_crab, bold_purple, bold_turquoise, green, info, note, ok, turquoise, warn};
@@ -37,6 +40,8 @@ use privcrab::style::{bold_crab, bold_purple, bold_turquoise, green, info, note,
 pub struct Cli {
     #[arg(long, global = true, help = "Print debug output")]
     pub verbose: bool,
+    #[arg(long, global = true, help = "Write logs to a file")]
+    pub log_file: Option<PathBuf>,
     #[command(subcommand)]
     pub command: Command,
 }
@@ -71,6 +76,12 @@ pub enum Command {
     Probe {
         #[command(subcommand)]
         action: ProbeAction,
+    },
+    #[cfg(target_os = "linux")]
+    #[command(about = "Install or remove a systemd service for persistent MAC randomization")]
+    Service {
+        #[command(subcommand)]
+        action: ServiceAction,
     },
 }
 
@@ -155,6 +166,18 @@ pub enum ProbeAction {
 }
 
 #[cfg(target_os = "linux")]
+#[derive(Subcommand)]
+pub enum ServiceAction {
+    #[command(about = "Install a systemd service to randomize the MAC address at boot")]
+    Install {
+        #[arg(long)]
+        iface: Option<String>,
+    },
+    #[command(about = "Remove the systemd service and restore the original MAC address")]
+    Remove,
+}
+
+#[cfg(target_os = "linux")]
 #[derive(Clone, Copy, ValueEnum)]
 pub enum ProviderArg {
     Cloudflare,
@@ -209,6 +232,9 @@ impl Command {
                 ProbeAction::Start { .. } => Need::NetAdminRaw,
                 ProbeAction::Stop { .. } => Need::NetAdmin,
             },
+            Command::Service { action } => match action {
+                ServiceAction::Install { .. } | ServiceAction::Remove => Need::Root,
+            },
         }
     }
 }
@@ -232,6 +258,8 @@ pub fn run(cli: Cli) -> anyhow::Result<()> {
         Command::Hostname { action } => run_hostname(action),
         #[cfg(target_os = "linux")]
         Command::Probe { action } => run_probe(action),
+        #[cfg(target_os = "linux")]
+        Command::Service { action } => run_service(action),
     }
 }
 
@@ -292,10 +320,12 @@ fn run_mac(action: MacAction) -> anyhow::Result<()> {
     match action {
         MacAction::Spoof { iface, vendor, mac } => {
             let iface = resolve_iface(iface)?;
+            warn_about_conflicts(&iface);
             wrap("spoof", mac_spoof(&iface, vendor.as_deref(), mac.as_deref()))
         }
         MacAction::Restore { iface } => {
             let iface = resolve_iface(iface)?;
+            warn_about_conflicts(&iface);
             wrap("restore", mac_restore(&iface))
         }
         MacAction::ListVendors => {
@@ -487,6 +517,28 @@ fn run_probe(action: ProbeAction) -> anyhow::Result<()> {
                         iface
                     ))
                 ),
+            }
+            Ok(())
+        }
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn run_service(action: ServiceAction) -> anyhow::Result<()> {
+    match action {
+        ServiceAction::Install { iface } => {
+            let iface = resolve_iface(iface)?;
+            wrap("service install", service::install(&iface))?;
+            println!("{}", ok("systemd service installed and enabled"));
+            println!("{}", note("MAC will be randomized at every boot"));
+            Ok(())
+        }
+        ServiceAction::Remove => {
+            if wrap("service remove", service::remove())? {
+                println!("{}", ok("systemd service removed"));
+                println!("{}", note("original MAC restored"));
+            } else {
+                println!("{}", warn("service is not installed"));
             }
             Ok(())
         }
