@@ -6,7 +6,7 @@
   ![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg) 
   ![Network](https://img.shields.io/badge/Network-Privacy-turquoise)
 
-  <img src="photos/privcrab.png" alt="PrivCrab Logo" width="350">
+  <img src="photos/privcrab_banner.png" alt="PrivCrab Banner" width="100%">
 </div>
 
 ---
@@ -18,7 +18,7 @@ Your network footprint often leaks more than you intend: hardware identifiers in
 It operates entirely locally. There is no telemetry or analytics, and it makes no network calls beyond those required when you explicitly run a leak test or verify a DNS provider.
 
 <div align="center">
-  <img src="photos/privcrab_banner.png" alt="PrivCrab Banner" width="100%">
+  <img src="photos/privcrab.png" alt="PrivCrab Logo" width="340">
 </div>
 
 ------------------------------------------------------------------------
