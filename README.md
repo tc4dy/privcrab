@@ -4,7 +4,7 @@
   <h1>PrivCrab</h1>
   <h3>Linux-first Network Privacy Toolkit</h3>
 
-[![Tests](https://github.com/tc4dy/privcrab/actions/workflows/test.yml/badge.svg)](https://github.com/tc4dy/privcrab/actions/workflows/test.yml)
+[![Tests](https://github.com/tc4dy/privcrab/.github/workflows/ci.yml/badge.svg)](https://github.com/tc4dy/privcrab/.github/workflows/ci.yml)
 ![Rust](https://img.shields.io/badge/rust-1.74%2B-orange.svg) ![License:
 MIT](https://img.shields.io/badge/license-MIT-purple.svg)
 ![Network](https://img.shields.io/badge/Network-Privacy-turquoise)
