@@ -1,6 +1,8 @@
 use std::fs;
 use std::io;
 use std::os::fd::{AsRawFd, OwnedFd, RawFd};
+use std::path::Path;
+use std::process::Command;
 
 use nix::errno::Errno;
 use nix::sys::socket::{socket, AddressFamily, SockFlag, SockType};
@@ -101,6 +103,25 @@ pub fn parse_net_dev(text: &str) -> Vec<String> {
 pub fn list() -> io::Result<Vec<String>> {
     let text = fs::read_to_string("/proc/net/dev")?;
     Ok(parse_net_dev(&text))
+}
+
+pub fn list_interfaces_with_mac() -> Result<Vec<(String, String)>, MacError> {
+    let base = Path::new("/sys/class/net");
+    let entries = fs::read_dir(base).map_err(MacError::ListInterfacesFailed)?;
+    let mut out = Vec::new();
+    for entry in entries {
+        let entry = entry.map_err(MacError::ListInterfacesFailed)?;
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if !is_valid_name(&name) {
+            continue;
+        }
+        let mac_path = base.join(&name).join("address");
+        if let Ok(mac) = fs::read_to_string(mac_path) {
+            out.push((name, mac.trim().to_ascii_lowercase()));
+        }
+    }
+    out.sort_by(|a, b| a.0.cmp(&b.0));
+    Ok(out)
 }
 
 pub fn exists(name: &str) -> bool {
@@ -210,4 +231,51 @@ fn change_flags(iface: &str, up: bool) -> Result<(), Errno> {
     };
     req.data.flags = wanted;
     write_flags(fd, &req)
+}
+
+pub fn active_network_manager() -> Option<&'static str> {
+    let managers = [
+        ("NetworkManager", "systemctl is-active NetworkManager"),
+        ("iwd", "systemctl is-active iwd"),
+        ("systemd-networkd", "systemctl is-active systemd-networkd"),
+    ];
+    for (name, cmd) in managers {
+        let output = Command::new("sh").arg("-c").arg(cmd).output().ok()?;
+        if output.status.success() && String::from_utf8_lossy(&output.stdout).trim() == "active" {
+            return Some(name);
+        }
+    }
+    None
+}
+
+pub fn warn_about_conflicts(iface: &str) {
+    if let Some(manager) = active_network_manager() {
+        match manager {
+            "NetworkManager" => {
+                eprintln!(
+                    "[!] NetworkManager is active and may overwrite the MAC address on reconnect."
+                );
+                eprintln!(
+                    "[>] Consider setting `wifi.cloned-mac-address=stable` or `ethernet.cloned-mac-address=stable` in NetworkManager."
+                );
+            }
+            "iwd" => {
+                eprintln!(
+                    "[!] iwd is active and may randomize MAC addresses independently."
+                );
+                eprintln!(
+                    "[>] Set `AddressRandomization=disabled` in /etc/iwd/main.conf to avoid conflicts."
+                );
+            }
+            "systemd-networkd" => {
+                eprintln!(
+                    "[!] systemd-networkd is active and may apply MACAddressPolicy."
+                );
+                eprintln!(
+                    "[>] Create a .link file with `MACAddressPolicy=none` for {iface} to prevent conflicts."
+                );
+            }
+            _ => {}
+        }
+    }
 }
