@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="photos/privcrab.png" alt="PrivCrab Logo" width="140">
+  <img src="photos/privcrab.png" alt="PrivCrab Logo" width="340">
 
   <h1>PrivCrab</h1>
   <h3>Linux-first Network Privacy Toolkit</h3>
@@ -27,7 +27,7 @@ makes no network calls beyond those required when you explicitly run a
 leak test or verify a DNS provider.
 
 <div align="center">
-  <img src="photos/privcrab_banner.gif" alt="PrivCrab Banner" width="100%">
+  <img src="photos/privcrab_banner.png" alt="PrivCrab Banner" width="100%">
 </div>
 
 ------------------------------------------------------------------------
