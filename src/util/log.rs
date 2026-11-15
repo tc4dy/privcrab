@@ -69,7 +69,8 @@ pub fn init_with_file(verbose: bool, log_file: Option<PathBuf>) -> anyhow::Resul
             .with_ansi(false)
             .with_writer(appender)
             .event_format(Plain)
-            .try_init()?;
+            .try_init()
+            .map_err(|err| anyhow::anyhow!("{err}"))?;
     } else {
         let _ = tracing_subscriber::fmt()
             .with_env_filter(filter)
