@@ -429,5 +429,5 @@ fn restore_without_matching_state_does_nothing() {
 fn binary_reports_version() {
     let (ok, out) = run_cli(&["--version"]);
     assert!(ok);
-    assert!(out.contains("0.1.1"));
+    assert!(out.contains("0.1.2"));
 }
