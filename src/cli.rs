@@ -4,6 +4,7 @@ use anyhow::Context;
 use clap::{ColorChoice, Parser, Subcommand};
 #[cfg(target_os = "linux")]
 use clap::ValueEnum;
+use inquire::Select;
 
 use privcrab::error::{AppError, ProbeError};
 #[cfg(target_os = "linux")]
@@ -19,6 +20,8 @@ use privcrab::modules::leak;
 use privcrab::modules::mac::{oui, spoof};
 #[cfg(target_os = "linux")]
 use privcrab::modules::probe::{self, Mode};
+#[cfg(target_os = "linux")]
+use privcrab::util::iface::{list_interfaces_with_mac, SysLink};
 #[cfg(target_os = "linux")]
 use privcrab::util::privilege::Need;
 use privcrab::style::{bold_crab, bold_purple, bold_turquoise, green, info, note, ok, turquoise, warn};
@@ -76,8 +79,8 @@ pub enum Command {
 pub enum MacAction {
     #[command(about = "Set a new MAC address")]
     Spoof {
-        #[arg(long)]
-        iface: String,
+        #[arg(long, help = "Interface to modify (prompts if omitted)")]
+        iface: Option<String>,
         #[arg(long, conflicts_with = "mac", help = "Use a prefix of this vendor")]
         vendor: Option<String>,
         #[arg(long, help = "Exact address to set, for example 02:aa:bb:cc:dd:ee")]
@@ -85,11 +88,13 @@ pub enum MacAction {
     },
     #[command(about = "Put the saved MAC address back")]
     Restore {
-        #[arg(long)]
-        iface: String,
+        #[arg(long, help = "Interface to modify (prompts if omitted)")]
+        iface: Option<String>,
     },
     #[command(about = "List vendors available for --vendor")]
     ListVendors,
+    #[command(about = "List available network interfaces and their current MAC addresses")]
+    ListInterfaces,
 }
 
 #[cfg(target_os = "linux")]
@@ -191,7 +196,7 @@ impl Command {
         match self {
             Command::Leak { .. } => Need::None,
             Command::Mac { action } => match action {
-                MacAction::ListVendors => Need::None,
+                MacAction::ListVendors | MacAction::ListInterfaces => Need::None,
                 MacAction::Spoof { .. } | MacAction::Restore { .. } => Need::NetAdmin,
             },
             Command::Dns { action } => match action {
@@ -286,9 +291,13 @@ fn run_leak(action: LeakAction) -> anyhow::Result<()> {
 fn run_mac(action: MacAction) -> anyhow::Result<()> {
     match action {
         MacAction::Spoof { iface, vendor, mac } => {
+            let iface = resolve_iface(iface)?;
             wrap("spoof", mac_spoof(&iface, vendor.as_deref(), mac.as_deref()))
         }
-        MacAction::Restore { iface } => wrap("restore", mac_restore(&iface)),
+        MacAction::Restore { iface } => {
+            let iface = resolve_iface(iface)?;
+            wrap("restore", mac_restore(&iface))
+        }
         MacAction::ListVendors => {
             println!("{}", bold_crab("vendors available for --vendor:"));
             for name in oui::vendors() {
@@ -296,7 +305,39 @@ fn run_mac(action: MacAction) -> anyhow::Result<()> {
             }
             Ok(())
         }
+        MacAction::ListInterfaces => {
+            let list = wrap("list interfaces", list_interfaces_with_mac())?;
+            println!("{}", bold_crab("available network interfaces:"));
+            for (name, mac) in list {
+                println!("  {} {} {}", turquoise("•"), bold_turquoise(&name), green(&mac));
+            }
+            Ok(())
+        }
     }
+}
+
+#[cfg(target_os = "linux")]
+fn resolve_iface(iface: Option<String>) -> anyhow::Result<String> {
+    if let Some(name) = iface {
+        return Ok(name);
+    }
+    let list = list_interfaces_with_mac().map_err(|err| anyhow::anyhow!("{err}"))?;
+    if list.is_empty() {
+        return Err(anyhow::anyhow!("no network interfaces found"));
+    }
+    let options: Vec<String> = list
+        .into_iter()
+        .map(|(name, mac)| format!("{} ({})", name, mac))
+        .collect();
+    let choice = Select::new("Select an interface:", options)
+        .prompt()
+        .map_err(|err| anyhow::anyhow!("prompt failed: {err}"))?;
+    let name = choice
+        .split_whitespace()
+        .next()
+        .unwrap_or(&choice)
+        .to_string();
+    Ok(name)
 }
 
 #[cfg(target_os = "linux")]
