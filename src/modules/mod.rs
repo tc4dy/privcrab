@@ -7,3 +7,5 @@ pub mod leak;
 pub mod mac;
 #[cfg(target_os = "linux")]
 pub mod probe;
+#[cfg(target_os = "linux")]
+pub mod service;
