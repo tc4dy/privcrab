@@ -1,34 +1,23 @@
-<div align="center">
-  <img src="photos/privcrab_banner.png" alt="PrivCrab Logo" width="100%">
+<img src="photos/privcrab.png" alt="PrivCrab Logo" width="150">
 
-  <h1>PrivCrab</h1>
-  <h3>Linux-first Network Privacy Toolkit</h3>
+# PrivCrab
+
+### Linux-first Network Privacy Toolkit
 
 [![Tests](https://github.com/tc4dy/privcrab/actions/workflows/ci.yml/badge.svg)](https://github.com/tc4dy/privcrab/actions/workflows/ci.yml)
-![Rust](https://img.shields.io/badge/rust-1.74%2B-orange.svg) ![License:
-MIT](https://img.shields.io/badge/license-MIT-purple.svg)
+![Rust](https://img.shields.io/badge/rust-1.74%2B-orange.svg) 
+![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg) 
 ![Network](https://img.shields.io/badge/Network-Privacy-turquoise)
 
 **Take control. Leave no trace.**
 
-</div>
+**PrivCrab** is a Linux-first command-line utility for hardening your network privacy. It provides granular control over hardware addresses, DNS queries, system hostnames, and your IPv4/IPv6 leak surface.
 
-**PrivCrab** is a Linux-first command-line utility for hardening your
-network privacy. It provides granular control over hardware addresses,
-DNS queries, system hostnames, and your IPv4/IPv6 leak surface.
+Your network footprint often leaks more than you intend: hardware identifiers in MAC addresses, plaintext DNS queries, predictable hostnames, and unencrypted traffic paths. PrivCrab allows you to inspect what the outside world sees and spoof or restore these identifiers.
 
-Your network footprint often leaks more than you intend: hardware
-identifiers in MAC addresses, plaintext DNS queries, predictable
-hostnames, and unencrypted traffic paths. PrivCrab allows you to inspect
-what the outside world sees and spoof or restore these identifiers.
+It operates entirely locally. There is no telemetry or analytics, and it makes no network calls beyond those required when you explicitly run a leak test or verify a DNS provider.
 
-It operates entirely locally. There is no telemetry or analytics, and it
-makes no network calls beyond those required when you explicitly run a
-leak test or verify a DNS provider.
-
-<div align="center">
-  <img src="photos/privcrab.png" alt="PrivCrab Banner" width="350">
-</div>
+<img src="photos/privcrab_banner.png" alt="PrivCrab Banner" width="100%">
 
 ------------------------------------------------------------------------
 
