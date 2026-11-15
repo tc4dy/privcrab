@@ -33,11 +33,11 @@ pub fn spoof_with<L: Link>(
 
     let mut guard = MacGuard::new(link, iface, was_up);
     let outcome = write_mac(link, iface, wanted, settle, was_up);
-    guard.disarm();
 
     if outcome.is_err() && created {
         release_if_unchanged(link, store, iface, &original);
     }
+    guard.disarm();
 
     outcome
 }
