@@ -1,8 +1,8 @@
-<img src="photos/privcrab.png" alt="PrivCrab Logo" width="150">
+<div align="center">
+  <img src="photos/privcrab.png" alt="PrivCrab Logo" width="350">
 
-# PrivCrab
-
-### Linux-first Network Privacy Toolkit
+  <h1>PrivCrab</h1>
+  <h3>Linux-first Network Privacy Toolkit</h3>
 
 [![Tests](https://github.com/tc4dy/privcrab/actions/workflows/ci.yml/badge.svg)](https://github.com/tc4dy/privcrab/actions/workflows/ci.yml)
 ![Rust](https://img.shields.io/badge/rust-1.74%2B-orange.svg) 
@@ -11,13 +11,24 @@
 
 **Take control. Leave no trace.**
 
-**PrivCrab** is a Linux-first command-line utility for hardening your network privacy. It provides granular control over hardware addresses, DNS queries, system hostnames, and your IPv4/IPv6 leak surface.
+</div>
 
-Your network footprint often leaks more than you intend: hardware identifiers in MAC addresses, plaintext DNS queries, predictable hostnames, and unencrypted traffic paths. PrivCrab allows you to inspect what the outside world sees and spoof or restore these identifiers.
+**PrivCrab** is a Linux-first command-line utility for hardening your
+network privacy. It provides granular control over hardware addresses,
+DNS queries, system hostnames, and your IPv4/IPv6 leak surface.
 
-It operates entirely locally. There is no telemetry or analytics, and it makes no network calls beyond those required when you explicitly run a leak test or verify a DNS provider.
+Your network footprint often leaks more than you intend: hardware
+identifiers in MAC addresses, plaintext DNS queries, predictable
+hostnames, and unencrypted traffic paths. PrivCrab allows you to inspect
+what the outside world sees and spoof or restore these identifiers.
 
-<img src="photos/privcrab_banner.png" alt="PrivCrab Banner" width="100%">
+It operates entirely locally. There is no telemetry or analytics, and it
+makes no network calls beyond those required when you explicitly run a
+leak test or verify a DNS provider.
+
+<div align="center">
+  <img src="photos/privcrab_banner.png" alt="PrivCrab Banner" width="100%">
+</div>
 
 ------------------------------------------------------------------------
 
@@ -246,6 +257,8 @@ $ sudo privcrab mac spoof --iface wlan0 --vendor Intel
 [*] action completed
 ```
 
+![LEAK TEST](https://img.shields.io/badge/01-LEAK%20TEST-FF963B?style=flat-square)
+
 ### 1. Leak Test
 
 Check what the outside world sees before and after applying changes.
@@ -258,6 +271,8 @@ Use `--full` to wait for every endpoint and print each individual
 result. If IPv6 is not reachable, it prints a negative status. If your
 IPv4 falls into a known datacenter range, it hints that you are behind a
 VPN.
+
+![MAC SPOOFING](https://img.shields.io/badge/02-MAC%20SPOOFING-3987FF?style=flat-square)
 
 ### 2. MAC Spoofing
 
@@ -289,6 +304,8 @@ sudo privcrab mac restore --iface wlan0
 | `--vendor VENDOR` | Use a prefix from a known vendor. Run `privcrab mac list-vendors` to see supported names. |
 | `--mac MAC`       | Set an exact MAC address (e.g., `02:aa:bb:cc:dd:ee`). Must be unicast and non-zero.       |
 
+![DNS PRIVACY](https://img.shields.io/badge/03-DNS%20PRIVACY-36B878?style=flat-square)
+
 ### 3. DNS Over HTTPS / TLS
 
 Verify and switch the system resolver to a privacy-focused provider.
@@ -316,6 +333,8 @@ Test if the current resolver is answering correctly:
 privcrab dns test
 ```
 
+![HOSTNAME](https://img.shields.io/badge/04-HOSTNAME-9B6BDE?style=flat-square)
+
 ### 4. Hostname Randomization
 
 Generate a random hostname and apply it to the kernel and
@@ -330,6 +349,8 @@ Restore the original hostname:
 ``` bash
 sudo privcrab hostname restore
 ```
+
+![PROBE MONITORING](https://img.shields.io/badge/05-PROBE%20MONITORING-FF963B?style=flat-square)
 
 ### 5. Probe Monitoring (Experimental)
 
@@ -354,6 +375,8 @@ privcrab probe status --iface wlan0
 ```
 
 ------------------------------------------------------------------------
+
+![PRIVACY](https://img.shields.io/badge/PRIVACY-3987FF?style=flat-square)
 
 ## Privacy Notes
 
