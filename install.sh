@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 
 REPO="https://github.com/tc4dy/privcrab"
