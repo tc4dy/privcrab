@@ -25,6 +25,8 @@ pub enum AppError {
     Priv(#[from] PrivError),
     #[error(transparent)]
     Config(#[from] ConfigError),
+    #[error(transparent)]
+    Service(#[from] ServiceError),
 }
 
 #[derive(Debug, Error)]
@@ -37,6 +39,8 @@ pub enum MacError {
     PermissionDenied,
     #[error("invalid MAC address: {0}")]
     InvalidMac(String),
+    #[error("could not list network interfaces")]
+    ListInterfacesFailed(#[source] io::Error),
     #[error("could not bring interface down")]
     IfaceDown(#[source] SysError),
     #[error("could not bring interface up")]
@@ -63,6 +67,10 @@ pub enum DnsError {
     InvalidResponse,
     #[error("could not write system resolver configuration")]
     SystemResolverWrite(#[source] io::Error),
+    #[error("could not update resolv.conf via resolvconf")]
+    ResolvConfUpdateFailed(#[source] io::Error),
+    #[error("unsupported DNS backend: {0}")]
+    DnsBackendUnsupported(String),
     #[error("{0} failed")]
     CommandFailed(String),
     #[error(transparent)]
@@ -133,4 +141,16 @@ pub enum ConfigError {
     ParseFailed(#[source] serde_json::Error),
     #[error("state directory unavailable")]
     PathUnavailable,
+}
+
+#[derive(Debug, Error)]
+pub enum ServiceError {
+    #[error("could not write systemd service file")]
+    WriteFailed(#[source] io::Error),
+    #[error("could not enable systemd service")]
+    EnableFailed(String),
+    #[error("could not disable systemd service")]
+    DisableFailed(String),
+    #[error("systemd not available")]
+    SystemdUnavailable,
 }
