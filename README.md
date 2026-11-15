@@ -223,6 +223,36 @@ If you skip `setcap`, you must run all privileged commands with `sudo`.
 Running `privcrab` without arguments prints the help menu. Every command
 follows a predictable structure.
 
+
+<div align="center">
+
+![COMMAND](https://img.shields.io/badge/COMMAND-3987FF?style=flat-square)
+![SUCCESS](https://img.shields.io/badge/%5B%2B%5D-SUCCESS-36B878?style=flat-square)
+![INFO](https://img.shields.io/badge/%5B%3F%5D-INFO-9B6BDE?style=flat-square)
+![ACTION](https://img.shields.io/badge/%5B%3E%5D-ACTION-FF963B?style=flat-square)
+![CODE](https://img.shields.io/badge/%5B%3C%2F%3E%5D-CLI-3987FF?style=flat-square)
+
+</div>
+
+> **Reading the output:** `[+]` indicates a successful action, `[-]` indicates an unavailable or negative result, and `[*]` marks an informational message. The exact meaning depends on the command output.
+
+### Command Reference
+
+| Command | Purpose |
+|---|---|
+| `privcrab leak test` | Check public IPv4, IPv6 reachability and externally visible DNS resolver. |
+| `privcrab mac spoof --iface IFACE` | Spoof an interface MAC address. |
+| `privcrab mac restore --iface IFACE` | Restore the saved MAC address. |
+| `privcrab dns set --provider PROVIDER --protocol PROTOCOL` | Configure a supported encrypted DNS provider. |
+| `privcrab dns restore` | Restore the previous DNS configuration. |
+| `privcrab hostname randomize` | Generate and apply a randomized hostname. |
+| `privcrab hostname restore` | Restore the saved hostname. |
+| `privcrab probe start --iface IFACE` | Start experimental probe monitoring. |
+| `privcrab probe stop --iface IFACE` | Stop probe monitoring. |
+
+
+![OUTPUT](https://img.shields.io/badge/OUTPUT-3987FF?style=flat-square)
+
 ### Example Output
 
 **Checking for leaks**
@@ -259,6 +289,8 @@ $ sudo privcrab mac spoof --iface wlan0 --vendor Intel
 
 ![LEAK TEST](https://img.shields.io/badge/01-LEAK%20TEST-FF963B?style=flat-square)
 
+![01](https://img.shields.io/badge/01-LEAK%20TEST-FF963B?style=flat-square)
+
 ### 1. Leak Test
 
 Check what the outside world sees before and after applying changes.
@@ -273,6 +305,8 @@ IPv4 falls into a known datacenter range, it hints that you are behind a
 VPN.
 
 ![MAC SPOOFING](https://img.shields.io/badge/02-MAC%20SPOOFING-3987FF?style=flat-square)
+
+![02](https://img.shields.io/badge/02-MAC%20SPOOFING-3987FF?style=flat-square)
 
 ### 2. MAC Spoofing
 
@@ -296,6 +330,8 @@ Restore the original MAC from the saved state:
 sudo privcrab mac restore --iface wlan0
 ```
 
+![OPTIONS](https://img.shields.io/badge/OPTIONS-9B6BDE?style=flat-square)
+
 #### MAC Options
 
 | Flag              | Description                                                                               |
@@ -306,6 +342,8 @@ sudo privcrab mac restore --iface wlan0
 
 ![DNS PRIVACY](https://img.shields.io/badge/03-DNS%20PRIVACY-36B878?style=flat-square)
 
+![03](https://img.shields.io/badge/03-DNS%20PRIVACY-36B878?style=flat-square)
+
 ### 3. DNS Over HTTPS / TLS
 
 Verify and switch the system resolver to a privacy-focused provider.
@@ -313,6 +351,8 @@ Verify and switch the system resolver to a privacy-focused provider.
 ``` bash
 sudo privcrab dns set --provider cloudflare --protocol dot
 ```
+
+![OPTIONS](https://img.shields.io/badge/OPTIONS-9B6BDE?style=flat-square)
 
 #### DNS Options
 
@@ -335,6 +375,8 @@ privcrab dns test
 
 ![HOSTNAME](https://img.shields.io/badge/04-HOSTNAME-9B6BDE?style=flat-square)
 
+![04](https://img.shields.io/badge/04-HOSTNAME-9B6BDE?style=flat-square)
+
 ### 4. Hostname Randomization
 
 Generate a random hostname and apply it to the kernel and
@@ -351,6 +393,8 @@ sudo privcrab hostname restore
 ```
 
 ![PROBE MONITORING](https://img.shields.io/badge/05-PROBE%20MONITORING-FF963B?style=flat-square)
+
+![05](https://img.shields.io/badge/05-PROBE%20MONITORING-FF963B?style=flat-square)
 
 ### 5. Probe Monitoring (Experimental)
 
@@ -375,6 +419,8 @@ privcrab probe status --iface wlan0
 ```
 
 ------------------------------------------------------------------------
+
+![PRIVACY](https://img.shields.io/badge/PRIVACY-3987FF?style=flat-square)
 
 ![PRIVACY](https://img.shields.io/badge/PRIVACY-3987FF?style=flat-square)
 
@@ -413,5 +459,17 @@ privcrab probe status --iface wlan0
 [GitHub Repository](https://github.com/tc4dy/privcrab) ·
 [Releases](https://github.com/tc4dy/privcrab/releases) · [Report an
 Issue](https://github.com/tc4dy/privcrab/issues)
+
+</div>
+
+---
+
+<div align="center">
+
+![LOCAL FIRST](https://img.shields.io/badge/LOCAL--FIRST-36B878?style=flat-square)
+![NO TELEMETRY](https://img.shields.io/badge/NO%20TELEMETRY-9B6BDE?style=flat-square)
+![LINUX](https://img.shields.io/badge/BUILT%20FOR-LINUX-FF963B?style=flat-square)
+
+**Inspect your exposure. Control your network.**
 
 </div>
