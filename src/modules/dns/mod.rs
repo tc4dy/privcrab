@@ -41,6 +41,8 @@ pub enum ResolvKind {
     PlainFile,
     SystemdResolved,
     NetworkManager,
+    OpenResolv,
+    Dhcpcd,
     OtherSymlink,
 }
 
@@ -50,7 +52,9 @@ impl ResolvKind {
             ResolvKind::PlainFile => 0,
             ResolvKind::SystemdResolved => 1,
             ResolvKind::NetworkManager => 2,
-            ResolvKind::OtherSymlink => 3,
+            ResolvKind::OpenResolv => 3,
+            ResolvKind::Dhcpcd => 4,
+            ResolvKind::OtherSymlink => 5,
         }
     }
 
@@ -58,7 +62,9 @@ impl ResolvKind {
         match value {
             1 => ResolvKind::SystemdResolved,
             2 => ResolvKind::NetworkManager,
-            3 => ResolvKind::OtherSymlink,
+            3 => ResolvKind::OpenResolv,
+            4 => ResolvKind::Dhcpcd,
+            5 => ResolvKind::OtherSymlink,
             _ => ResolvKind::PlainFile,
         }
     }
@@ -69,6 +75,10 @@ pub fn kind_of(target: &str) -> ResolvKind {
         ResolvKind::SystemdResolved
     } else if target.contains("NetworkManager") {
         ResolvKind::NetworkManager
+    } else if target.contains("resolvconf") {
+        ResolvKind::OpenResolv
+    } else if target.contains("dhcpcd") {
+        ResolvKind::Dhcpcd
     } else {
         ResolvKind::OtherSymlink
     }
@@ -304,6 +314,20 @@ fn write_resolv(kind: ResolvKind, contents: &str) -> Result<(), DnsError> {
             }
         }
         ResolvKind::NetworkManager | ResolvKind::OtherSymlink => write_in_place(RESOLV, contents),
+        ResolvKind::OpenResolv => {
+            write_in_place(RESOLV, contents)?;
+            let output = Command::new("resolvconf")
+                .arg("-u")
+                .output()
+                .map_err(DnsError::ResolvConfUpdateFailed)?;
+            if output.status.success() {
+                Ok(())
+            } else {
+                tracing::debug!("{}", String::from_utf8_lossy(&output.stderr));
+                Err(DnsError::CommandFailed("resolvconf -u".to_string()))
+            }
+        }
+        ResolvKind::Dhcpcd => write_in_place(RESOLV, contents),
         ResolvKind::SystemdResolved => {
             Err(DnsError::CommandFailed("resolv.conf update".to_string()))
         }
