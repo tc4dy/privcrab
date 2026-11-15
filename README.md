@@ -9,6 +9,8 @@
   <img src="photos/privcrab.png" alt="PrivCrab Logo" width="350">
 </div>
 
+---
+
 **PrivCrab** is a Linux-first command-line utility for hardening your network privacy. It provides granular control over hardware addresses, DNS queries, system hostnames, and your IPv4/IPv6 leak surface.
 
 Your network footprint often leaks more than you intend: hardware identifiers in MAC addresses, plaintext DNS queries, predictable hostnames, and unencrypted traffic paths. PrivCrab allows you to inspect what the outside world sees and spoof or restore these identifiers.
