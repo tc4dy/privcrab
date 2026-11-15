@@ -33,7 +33,7 @@ pub enum MacError {
     InterfaceNotFound(String),
     #[error("invalid interface name: {0}")]
     InvalidInterface(String),
-    #[error("permission denied (need CAP_NET_ADMIN)")]
+    #[error("permission denied")]
     PermissionDenied,
     #[error("invalid MAC address: {0}")]
     InvalidMac(String),
@@ -125,8 +125,6 @@ pub enum PrivError {
     RootRequired,
     #[error("CAP_NET_ADMIN capability missing")]
     CapNetAdminMissing,
-    #[error("CAP_NET_RAW capability missing (required for pcap/probe)")]
-    CapNetRawMissing,
 }
 
 #[derive(Debug, Error)]
@@ -135,4 +133,4 @@ pub enum ConfigError {
     ParseFailed(#[source] serde_json::Error),
     #[error("state directory unavailable")]
     PathUnavailable,
-}   
+}
