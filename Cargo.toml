@@ -1,0 +1,50 @@
+[package]
+name = "privcrab"
+version = "0.1.0"
+edition = "2021"
+authors = ["tc4dy <https://github.com/tc4dy>"]
+license = "MIT"
+repository = "https://github.com/tc4dy/privcrab"
+description = "Network privacy hardening toolkit"
+rust-version = "1.74"
+
+[lib]
+name = "privcrab"
+path = "src/lib.rs"
+
+[[bin]]
+name = "privcrab"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1.36", features = ["full"] }
+clap = { version = "4.5", features = ["derive", "color"] }
+thiserror = "1.0"
+anyhow = "1.0"
+reqwest = { version = "0.11", features = ["rustls-tls", "json"], default-features = false }
+hickory-resolver = { version = "0.24", features = ["dns-over-https-rustls", "dns-over-rustls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+zeroize = { version = "1.7", features = ["derive"] }
+rand = "0.8"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+dirs = "5.0"
+
+[target.'cfg(target_os = "linux")'.dependencies]
+nix = { version = "0.27", features = ["net", "ioctl", "socket", "hostname", "user", "fs"] }
+pcap = "1.1"
+netlink_wi = "0.8"
+libc = "0.2"
+
+[dev-dependencies]
+tokio-test = "0.4"
+assert_cmd = "2.0"
+mockall = "0.12"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
