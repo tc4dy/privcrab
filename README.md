@@ -289,8 +289,6 @@ $ sudo privcrab mac spoof --iface wlan0 --vendor Intel
 
 ![LEAK TEST](https://img.shields.io/badge/01-LEAK%20TEST-FF963B?style=flat-square)
 
-![01](https://img.shields.io/badge/01-LEAK%20TEST-FF963B?style=flat-square)
-
 ### 1. Leak Test
 
 Check what the outside world sees before and after applying changes.
@@ -305,8 +303,6 @@ IPv4 falls into a known datacenter range, it hints that you are behind a
 VPN.
 
 ![MAC SPOOFING](https://img.shields.io/badge/02-MAC%20SPOOFING-3987FF?style=flat-square)
-
-![02](https://img.shields.io/badge/02-MAC%20SPOOFING-3987FF?style=flat-square)
 
 ### 2. MAC Spoofing
 
@@ -342,8 +338,6 @@ sudo privcrab mac restore --iface wlan0
 
 ![DNS PRIVACY](https://img.shields.io/badge/03-DNS%20PRIVACY-36B878?style=flat-square)
 
-![03](https://img.shields.io/badge/03-DNS%20PRIVACY-36B878?style=flat-square)
-
 ### 3. DNS Over HTTPS / TLS
 
 Verify and switch the system resolver to a privacy-focused provider.
@@ -375,8 +369,6 @@ privcrab dns test
 
 ![HOSTNAME](https://img.shields.io/badge/04-HOSTNAME-9B6BDE?style=flat-square)
 
-![04](https://img.shields.io/badge/04-HOSTNAME-9B6BDE?style=flat-square)
-
 ### 4. Hostname Randomization
 
 Generate a random hostname and apply it to the kernel and
@@ -393,8 +385,6 @@ sudo privcrab hostname restore
 ```
 
 ![PROBE MONITORING](https://img.shields.io/badge/05-PROBE%20MONITORING-FF963B?style=flat-square)
-
-![05](https://img.shields.io/badge/05-PROBE%20MONITORING-FF963B?style=flat-square)
 
 ### 5. Probe Monitoring (Experimental)
 
@@ -419,8 +409,6 @@ privcrab probe status --iface wlan0
 ```
 
 ------------------------------------------------------------------------
-
-![PRIVACY](https://img.shields.io/badge/PRIVACY-3987FF?style=flat-square)
 
 ![PRIVACY](https://img.shields.io/badge/PRIVACY-3987FF?style=flat-square)
 
