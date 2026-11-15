@@ -1,9 +1,7 @@
 use std::fs;
-use std::io;
 use std::process::Command;
 
 use crate::error::ServiceError;
-use crate::modules::mac::spoof;
 
 const SERVICE_PATH: &str = "/etc/systemd/system/privcrab-mac.service";
 
@@ -50,7 +48,7 @@ WantedBy=multi-user.target
 }
 
 pub fn remove() -> Result<bool, ServiceError> {
-    if !fs::metadata(SERVICE_PATH).is_ok() {
+    if fs::metadata(SERVICE_PATH).is_err() {
         return Ok(false);
     }
 
@@ -69,10 +67,5 @@ pub fn remove() -> Result<bool, ServiceError> {
     }
 
     fs::remove_file(SERVICE_PATH).map_err(ServiceError::WriteFailed)?;
-
-    if let Ok(state) = spoof::restore("") {
-        let _ = state;
-    }
-
     Ok(true)
 }
