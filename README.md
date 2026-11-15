@@ -6,8 +6,6 @@
   ![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg) 
   ![Network](https://img.shields.io/badge/Network-Privacy-turquoise)
 
-  **Take control. Leave no trace.**
-
   <img src="photos/privcrab.png" alt="PrivCrab Logo" width="350">
 </div>
 
